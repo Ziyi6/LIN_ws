@@ -16,4 +16,13 @@
 /** @brief FFT */
 void fft(COMPLEX *fftdata, int fftorder);
 
+COMPLEX conj(COMPLEX input)
+{
+    COMPLEX output;
+    output.real = input.real;
+    output.image = -input.image;
+
+    return output;
+}
+
 #endif //__BASELIB_H_
