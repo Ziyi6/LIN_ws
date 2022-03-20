@@ -1,2 +1,2 @@
-add_executable(LMS main.cpp)
-target_link_libraries(LMS myfun)
+add_executable(RLS main.cpp)
+target_link_libraries(RLS myfun)

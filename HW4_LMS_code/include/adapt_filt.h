@@ -10,10 +10,13 @@
 #define _ADAPT_FILT_H_
 
 // Eigen 核心部分
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 // 稠密矩阵的代数运算（逆，特征值等）
-#include <eigen3/Eigen/Dense>
-using namespace Eigen;
+#include <Eigen/Dense>
+// using namespace Eigen;
+
+#include <iostream>
+using namespace std;
 
 const int filter_length = 128;
 static double inputdata[filter_length];

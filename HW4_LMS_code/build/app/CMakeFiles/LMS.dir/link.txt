@@ -1,1 +1,0 @@
-/usr/bin/g++  -O3 -O3 -DNDEBUG  -rdynamic CMakeFiles/LMS.dir/main.cpp.o  -o LMS  -Wl,-rpath,/mnt/hgfs/code/LIN_ws/HW4_LMS_code/build/src ../src/libmyfun.so 

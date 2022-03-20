@@ -93,53 +93,54 @@
  */
 int adapt_filtering(short input, double *adapt_filter, int filter_length, short *err)
 {
-  int i;
-  double filter_output = 0.0;
-  double error = 0.0;
-  double mu = 0.2;
-  double lambda = 0.95;
-  
-  Eigen::Matrix<double, 128, 1> k;
-  Eigen::Matrix<double, 128, 1> x;
-  // Eigen::Matrix<double, 128, 128> P;
+    int i;
+    double filter_output = 0.0;
+    double error = 0.0;
+    double mu = 0.2;
+    double lambda = 0.95;
 
-  // update inputdata buffer. Each sample is normalized to [-1,1)
-  // 提供的循环，可成功跳出
-  for (i = filter_length - 1; i > 0; i--)
-  {
-    inputdata[i] = inputdata[i - 1];
-  }
-  inputdata[0] = double(input / 32768.0);
+    Eigen::Matrix<double, 128, 1> k;
+    Eigen::Matrix<double, 128, 1> x;
 
-  // finish adaptive filtering algorithm here, using LMS and RLS, respectively
+    // update inputdata buffer. Each sample is normalized to [-1,1)
+    // 提供的循环，可成功跳出
+    for (i = filter_length - 1; i > 0; i--)
+    {
+        inputdata[i] = inputdata[i - 1];
+    }
+    inputdata[0] = double(input / 32768.0);
 
-  // save the input data to a 128*1 vector
-  for (i = 0; i < filter_length; i++)
-  {
-    x(i, 0) = inputdata[i];
-  }
+    // finish adaptive filtering algorithm here, using LMS and RLS, respectively
 
-  /*    Recursive-Least-Square(RLS) Filter    */
-  // 1. calculate filter output, as well as necessary parameters
-  // 计算滤波器输出，循环可成功跳出
-  for (i = 0; i < filter_length; i++)
-  {
-    filter_output = *(adapt_filter + i) * inputdata[i] + filter_output;
-  }
-  error = inputdata[0] - filter_output;
-  k = (P * x) / (lambda + x.transpose() * P * x);
-  P = (P - k * x.transpose() * P) / lambda;
+    // save the input data to a 128*1 vector
+    for (i = 0; i < filter_length; i++)
+    {
+        x(i, 0) = inputdata[i];
+    }
 
-  // 2. update filter: adapt_filter, for future iterations
-  // 更新滤波器系数，循环可成功跳出
-  for (i = 0; i < filter_length; i++)
-  {
-    *(adapt_filter + i) = *(adapt_filter + i) + k(i, 0) * error;
-  }
-  // end adaptive filtering algorithm
+    /*    Recursive-Least-Square(RLS) Filter    */
+    // 1. calculate filter output, as well as necessary parameters
+    // 计算滤波器输出，循环可成功跳出
+    for (i = 0; i < filter_length; i++)
+    {
+        filter_output = *(adapt_filter + i) * inputdata[i] + filter_output;
+    }
+    error = inputdata[0] - filter_output;
 
-  // output error
-  err[0] = short(error * 32768.0);
-  // err[0] = short(error);
-  return 0;
+    k = (P * x) / (lambda + x.transpose() * P * x);
+    P = (P - k * x.transpose() * P) / lambda;
+
+    // 2. update filter: adapt_filter, for future iterations
+    // 更新滤波器系数，循环可成功跳出
+    for (i = 0; i < filter_length; i++)
+    {
+        *(adapt_filter + i) = *(adapt_filter + i) + k(i, 0) * error;
+    }
+    // end adaptive filtering algorithm
+
+    // output error
+    // err[0] = short(error * 32768.0);
+    *err = (short)(error * 32768.0);
+
+    return 0;
 }
